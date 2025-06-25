@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   Text,
@@ -8,6 +8,8 @@ import {
 } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Star, ArrowLeft, ArrowRight } from "lucide-react-native";
+import { InterstitialAdComponent } from "../../components/ads";
+import { rewardService } from "../../services/RewardService";
 
 interface Prayer {
   id: string;
@@ -23,6 +25,9 @@ export default function PrayerDetailScreen() {
   const [prayers, setPrayers] = useState<Prayer[]>([]);
   const [loading, setLoading] = useState(true);
   const [isFavorite, setIsFavorite] = useState(false);
+  const [prayerViewCount, setPrayerViewCount] = useState(0);
+  const [showInterstitialAd, setShowInterstitialAd] = useState(false);
+  const navigationCountRef = useRef(0);
 
   // Fetch prayers from Baserow
   useEffect(() => {
@@ -104,13 +109,41 @@ export default function PrayerDetailScreen() {
     // In a real app, you would update this in your data store
   };
 
-  // Navigate to next prayer
+  // Navigate to next prayer with ad logic
   const goToNextPrayer = () => {
     if (prayers.length === 0) return;
 
+    navigationCountRef.current += 1;
+
+    // Check if user is ad-free
+    const isAdFree = rewardService.isAdFree();
+
+    // Show interstitial ad every 3rd navigation to avoid being too aggressive, but only if not ad-free
+    if (!isAdFree && navigationCountRef.current % 3 === 0) {
+      setShowInterstitialAd(true);
+    } else {
+      navigateToNextPrayer();
+    }
+  };
+
+  const navigateToNextPrayer = () => {
     const currentIndex = prayers.findIndex((prayer) => prayer.id === id);
     const nextIndex = (currentIndex + 1) % prayers.length;
     router.push(`/prayer/${prayers[nextIndex].id}`);
+  };
+
+  const handleAdClosed = () => {
+    setShowInterstitialAd(false);
+    // Navigate after ad is closed
+    setTimeout(() => {
+      navigateToNextPrayer();
+    }, 500);
+  };
+
+  const handleAdFailed = () => {
+    setShowInterstitialAd(false);
+    // Navigate immediately if ad fails
+    navigateToNextPrayer();
   };
 
   // Navigate back to prayer list
@@ -143,6 +176,16 @@ export default function PrayerDetailScreen() {
 
   return (
     <View className="flex-1 bg-[#EBFFD8]">
+      {/* Interstitial Ad Component */}
+      {showInterstitialAd && (
+        <InterstitialAdComponent
+          trigger="auto"
+          autoShowDelay={100}
+          onAdClosed={handleAdClosed}
+          onAdFailed={handleAdFailed}
+        />
+      )}
+
       {/* Header */}
       <View className="bg-[#C4E1E6] px-4 py-6 pt-12">
         <View className="flex-row justify-between items-center">

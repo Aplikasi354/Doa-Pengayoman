@@ -9,13 +9,23 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "test": "jest --watchAll",
-    "lint": "expo lint"
+    "lint": "expo lint",
+    "clean": "node scripts/clean-install.js",
+    "clean-build": "node scripts/clean-build.js",
+    "fix-deps": "node scripts/fix-dependencies.js",
+    "minimal-build": "node scripts/minimal-build.js",
+    "build:android": "eas build --platform android",
+    "build:ios": "eas build --platform ios",
+    "build:all": "eas build --platform all",
+    "submit:android": "eas submit --platform android",
+    "submit:ios": "eas submit --platform ios"
   },
   "jest": {
     "preset": "jest-expo"
   },
   "dependencies": {
     "@expo/vector-icons": "^14.1.0",
+
     "@react-navigation/bottom-tabs": "^7.2.0",
     "@react-navigation/native": "^7.0.14",
     "autoprefixer": "^10.4.20",
@@ -41,15 +51,14 @@
     "react-dom": "19.0.0",
     "react-native": "0.79.2",
     "react-native-gesture-handler": "~2.24.0",
-    "react-native-google-mobile-ads": "^15.4.0",
+
     "react-native-reanimated": "~3.17.4",
     "react-native-safe-area-context": "5.4.0",
     "react-native-screens": "~4.10.0",
     "react-native-svg": "^15.11.2",
     "react-native-web": "^0.20.0",
     "react-native-webview": "13.13.5",
-    "tailwindcss": "^3.4.17",
-    "tempo-devtools": "^2.0.108"
+    "tailwindcss": "^3.4.17"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
@@ -61,5 +70,6 @@
     "react-test-renderer": "18.3.1",
     "typescript": "~5.8.3"
   },
+
   "private": true
 }

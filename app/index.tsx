@@ -10,7 +10,11 @@ import {
 } from "react-native";
 import { Stack } from "expo-router";
 import PrayerList from "../components/PrayerList";
-import { Search, Bookmark } from "lucide-react-native";
+import { Search, Bookmark, Settings } from "lucide-react-native";
+// import { BannerAdComponent, AdFreeRewardComponent } from "../components/ads";
+// import { rewardService } from "../services/RewardService";
+// import PrivacySettingsComponent from "../components/privacy/PrivacySettingsComponent";
+// import { consentService } from "../services/ConsentService";
 
 interface Prayer {
   id: string;
@@ -25,11 +29,27 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
+  // const [isAdFree, setIsAdFree] = useState(false);
+  // const [showPrivacySettings, setShowPrivacySettings] = useState(false);
 
   // Fetch prayers from Baserow
   useEffect(() => {
     fetchPrayers();
+    // checkAdFreeStatus();
+    // initializeConsent();
   }, []);
+
+  // const checkAdFreeStatus = () => {
+  //   setIsAdFree(rewardService.isAdFree());
+  // };
+
+  // const initializeConsent = async () => {
+  //   try {
+  //     await consentService.initialize();
+  //   } catch (error) {
+  //     console.error('Failed to initialize consent:', error);
+  //   }
+  // };
 
   const fetchPrayers = async () => {
     try {
@@ -118,9 +138,19 @@ export default function Dashboard() {
 
       {/* Header */}
       <View className="bg-[#C4E1E6] px-6 py-8">
-        <Text className="text-2xl font-bold text-[#8DBCC7] text-center mb-6">
-          Doa Pengayoman
-        </Text>
+        <View className="flex-row justify-between items-center mb-6">
+          <View className="flex-1">
+            <Text className="text-2xl font-bold text-[#8DBCC7] text-center">
+              Doa Pengayoman
+            </Text>
+          </View>
+          {/* <TouchableOpacity
+            onPress={() => setShowPrivacySettings(true)}
+            className="p-2"
+          >
+            <Settings size={24} color="#8DBCC7" />
+          </TouchableOpacity> */}
+        </View>
 
         {/* Search Bar */}
         <View className="bg-white rounded-lg px-4 py-3 flex-row items-center">
@@ -135,6 +165,12 @@ export default function Dashboard() {
         </View>
       </View>
 
+      {/* Ad-Free Reward Component - Temporarily disabled */}
+      {/* <AdFreeRewardComponent
+        onRewardGranted={checkAdFreeStatus}
+        style={{ marginHorizontal: 0, marginTop: 0, marginBottom: 16 }}
+      /> */}
+
       {/* Prayer List */}
       <View className="flex-1 bg-white px-4 pt-6">
         <PrayerList
@@ -142,6 +178,26 @@ export default function Dashboard() {
           onToggleFavorite={toggleFavorite}
         />
       </View>
+
+      {/* Banner Ad at bottom - Temporarily disabled */}
+      {/* {!isAdFree && (
+        <BannerAdComponent
+          style={{
+            backgroundColor: 'white',
+            paddingVertical: 10,
+          }}
+        />
+      )} */}
+
+      {/* Privacy Settings Modal - Temporarily disabled */}
+      {/* <PrivacySettingsComponent
+        visible={showPrivacySettings}
+        onClose={() => setShowPrivacySettings(false)}
+        onConsentChanged={() => {
+          // Refresh ad status when consent changes
+          checkAdFreeStatus();
+        }}
+      /> */}
     </SafeAreaView>
   );
 }

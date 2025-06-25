@@ -10,6 +10,7 @@ import { useEffect } from "react";
 import "react-native-reanimated";
 import "../global.css";
 import { Platform } from "react-native";
+// import { adMobService } from "../services/AdMobService"; // Temporarily disabled
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -19,12 +20,14 @@ export default function RootLayout() {
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
   });
 
-  useEffect(() => {
-    if (process.env.EXPO_PUBLIC_TEMPO && Platform.OS === "web") {
-      const { TempoDevtools } = require("tempo-devtools");
-      TempoDevtools.init();
-    }
-  }, []);
+  // Removed tempo-devtools to fix build issues
+
+  // Initialize AdMob - Temporarily disabled
+  // useEffect(() => {
+  //   if (Platform.OS !== "web") {
+  //     adMobService.initialize().catch(console.error);
+  //   }
+  // }, []);
 
   useEffect(() => {
     if (loaded) {
